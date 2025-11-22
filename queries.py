@@ -3,13 +3,9 @@ from sqlalchemy.orm import sessionmaker
 import os
 
 def main():
-<<<<<<< HEAD
-    # Database connection - Update with your credentials
     DATABASE_URL = "postgresql://nuraiaripbay:050921@localhost:5432/caregiver_platform"
-=======
     # You can update your credentials here
     DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/caregiver_platform"
->>>>>>> 5c2d7286488f87a11aeaafed19c20ef22e1aec10
     engine = create_engine(DATABASE_URL)
     Session = sessionmaker(bind=engine)
     session = Session()
