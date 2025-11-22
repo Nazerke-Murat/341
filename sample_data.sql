@@ -1,5 +1,4 @@
--- sample_data.sql
--- Insert Users (at least 15)
+
 INSERT INTO "user" (email, given_name, surname, city, phone_number, profile_description, password) VALUES
 ('alice.johnson@email.com', 'Alice', 'Johnson', 'Astana', '+77011234567', 'Experienced caregiver with 5 years in elderly care. Certified nursing assistant.', 'pass123'),
 ('bob.smith@email.com', 'Bob', 'Smith', 'Almaty', '+77017654321', 'Friendly babysitter who loves children. Education degree from NU.', 'pass123'),
@@ -22,7 +21,7 @@ INSERT INTO "user" (email, given_name, surname, city, phone_number, profile_desc
 ('mike.black@email.com', 'Mike', 'Black', 'Almaty', '+77019999999', 'Elderly care needed for father.', 'pass123'),
 ('anna.gray@email.com', 'Anna', 'Gray', 'Astana', '+77011010101', 'Babysitter for after-school care.', 'pass123');
 
--- Insert Caregivers (first 10 users become caregivers)
+
 INSERT INTO caregiver (caregiver_user_id, photo, gender, caregiving_type, hourly_rate) VALUES
 (1, 'alice.jpg', 'F', 'Elderly Care', 15.00),
 (2, 'bob.jpg', 'M', 'Babysitter', 12.00),
@@ -35,7 +34,6 @@ INSERT INTO caregiver (caregiver_user_id, photo, gender, caregiving_type, hourly
 (9, 'isabella.jpg', 'F', 'Babysitter', 13.00),
 (10, 'jack.jpg', 'M', 'Playmate', 11.00);
 
--- Insert Members (users 11-15 become members)
 INSERT INTO member (member_user_id, house_rules, dependent_description) VALUES
 (11, 'No smoking, No pets, Please remove shoes', 'My 75-year old father needs daily assistance with mobility and medication'),
 (12, 'Vegetarian household, No loud noises after 9 PM', 'I have two children: 3-year old girl and 6-year old boy who loves painting'),
@@ -48,7 +46,7 @@ INSERT INTO member (member_user_id, house_rules, dependent_description) VALUES
 (19, 'Experience with dementia required', 'My 82-year old father has dementia'),
 (20, 'First aid certification required', 'My 5-year old son needs after-school care');
 
--- Insert Addresses
+
 INSERT INTO address (member_user_id, house_number, street, town) VALUES
 (11, '15', 'Kabanbay Batyr', 'Astana'),
 (12, '23', 'Turan Avenue', 'Astana'),
@@ -61,20 +59,23 @@ INSERT INTO address (member_user_id, house_number, street, town) VALUES
 (19, '22', 'Gogol Street', 'Almaty'),
 (20, '33', 'Kabanbay Batyr', 'Astana');
 
--- Enhanced Job data with new fields
+
 INSERT INTO job (member_user_id, required_caregiving_type, person_age, preferred_time_start, preferred_time_end, service_frequency, other_requirements, date_posted) VALUES
 (11, 'Elderly Care', 75, '09:00', '13:00', 'daily', 'Must be experienced with dementia patients, soft-spoken, available weekends', '2025-11-01'),
+(11, 'Elderly Care', 75, '10:00', '14:00', 'weekly', 'Medication management, light housekeeping, companion for walks', '2025-11-07'),
 (12, 'Babysitter', 5, '14:00', '18:00', 'weekends', 'CPR certified, creative, can help with homework, English speaking preferred', '2025-11-02'),
+(12, 'Playmate', 6, '15:00', '17:00', 'daily', 'Creative activities, soft-spoken, homework assistance', '2025-11-06'),
+(12, 'Babysitter', 3, '16:00', '20:00', 'daily', 'Evening care for two children, meal preparation', '2025-11-12'),
 (13, 'Elderly Care', 80, '08:00', '12:00', 'weekly', 'Patience required, experience with mobility issues, no pets policy', '2025-11-03'),
 (14, 'Babysitter', 4, '16:00', '20:00', 'daily', 'First aid certified, energetic, art and music skills appreciated', '2025-11-04'),
-(15, 'Playmate', 7, '10:00', '14:00', 'weekly', 'Special needs experience, structured activity planning, gentle approach', '2025-11-05'),
-(12, 'Playmate', 6, '15:00', '17:00', 'daily', 'Creative activities, soft-spoken, homework assistance', '2025-11-06'),
-(11, 'Elderly Care', 75, '10:00', '14:00', 'weekly', 'Medication management, light housekeeping, companion for walks', '2025-11-07'),
-(14, 'Babysitter', 4, '17:00', '21:00', 'weekends', 'Evening care required, meal preparation, bedtime routine', '2025-11-08'),
-(13, 'Elderly Care', 80, '07:00', '15:00', 'daily', 'Overnight care possible, must be reliable and punctual', '2025-11-09'),
-(15, 'Babysitter', 7, '13:00', '17:00', 'weekly', 'Experience with autism spectrum, structured environment', '2025-11-10');
+(15, 'Playmate', 7, '10:00', '14:00', 'weekly', 'Special needs experience,soft-spoken，structured activity planning, gentle approach', '2025-11-05'),
+(16, 'Elderly Care', 78, '11:00', '15:00', 'daily', 'Companion care,soft-spoken，medication reminders, light housekeeping', '2025-11-08'),
+(17, 'Babysitter', 5, '13:00', '17:00', 'weekends', 'Twin care, CPR certified, structured activities', '2025-11-09'),
+(18, 'Playmate', 6, '14:00', '18:00', 'weekly', 'Art activities, creative play, soft-spoken，homework help', '2025-11-10'),
+(19, 'Elderly Care', 82, '07:00', '15:00', 'daily', 'Overnight care possible, must be reliable and punctual', '2025-11-11'),
+(20, 'Babysitter', 5, '15:00', '19:00', 'daily', 'After-school care, homework supervision, snack preparation', '2025-11-13');
 
--- Insert Job Applications
+
 INSERT INTO job_application (caregiver_user_id, job_id, date_applied) VALUES
 (1, 1, '2025-11-11'),
 (3, 1, '2025-11-11'),
@@ -82,28 +83,36 @@ INSERT INTO job_application (caregiver_user_id, job_id, date_applied) VALUES
 (2, 2, '2025-11-12'),
 (5, 2, '2025-11-13'),
 (7, 2, '2025-11-13'),
-(8, 3, '2025-11-14'),
-(1, 3, '2025-11-14'),
 (4, 4, '2025-11-15'),
 (7, 4, '2025-11-15'),
 (10, 5, '2025-11-16'),
 (4, 5, '2025-11-16'),
 (9, 6, '2025-11-17'),
 (10, 6, '2025-11-17'),
-(3, 7, '2025-11-18');
+(8, 3, '2025-11-14'),
+(1, 3, '2025-11-14'),
+(3, 7, '2025-11-18'),
+(2, 8, '2025-11-19'),
+(5, 9, '2025-11-20'),
+(9, 10, '2025-11-21'),
+(7, 11, '2025-11-22'),
+(2, 12, '2025-11-23');
 
--- Insert Appointments
 INSERT INTO appointment (caregiver_user_id, member_user_id, appointment_date, appointment_time, work_hours, status) VALUES
 (1, 11, '2025-11-20', '09:00', 4.00, 'accepted'),
 (2, 12, '2025-11-21', '14:00', 3.50, 'accepted'),
-(3, 13, '2025-11-22', '10:00', 5.00, 'pending'),
 (5, 14, '2025-11-23', '16:00', 4.00, 'accepted'),
 (7, 12, '2025-11-24', '08:00', 6.00, 'accepted'),
-(6, 11, '2025-11-25', '13:00', 3.00, 'declined'),
 (8, 13, '2025-11-26', '11:00', 4.50, 'accepted'),
-(9, 14, '2025-11-27', '15:00', 5.00, 'pending'),
 (10, 15, '2025-11-28', '09:00', 4.00, 'accepted'),
 (4, 15, '2025-11-29', '17:00', 3.00, 'accepted'),
 (1, 16, '2025-11-30', '10:00', 4.00, 'accepted'),
 (3, 19, '2025-12-01', '08:00', 5.50, 'accepted'),
-(6, 16, '2025-12-02', '14:00', 3.00, 'accepted');
+(6, 16, '2025-12-02', '14:00', 3.00, 'accepted'),
+(2, 17, '2025-12-03', '13:00', 2.75, 'accepted'),
+(9, 18, '2025-12-04', '14:00', 3.25, 'accepted'),
+(5, 20, '2025-12-05', '15:00', 4.75, 'accepted'),
+(3, 13, '2025-11-22', '10:00', 5.00, 'pending'),
+(9, 14, '2025-11-27', '15:00', 5.00, 'pending'),
+(6, 11, '2025-11-25', '13:00', 3.00, 'declined'),
+(4, 19, '2025-12-06', '09:00', 2.50, 'pending');
