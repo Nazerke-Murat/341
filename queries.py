@@ -9,7 +9,7 @@ import os
 
 def main():
     # Database connection - Update with your credentials
-    DATABASE_URL = "postgresql://nazerke:nagi753400@localhost:5433/caregiver_platform"
+    DATABASE_URL = "postgresql://nuraiaripbay:050921@localhost:5432/caregiver_platform"
     engine = create_engine(DATABASE_URL)
     Session = sessionmaker(bind=engine)
     session = Session()

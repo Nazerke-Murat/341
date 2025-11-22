@@ -1,7 +1,3 @@
-"""
-Main Flask application for the Online Caregivers Platform.
-Implements CRUD operations for all database tables.
-"""
 from flask import Flask, render_template, request, redirect, url_for, flash
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
@@ -10,16 +6,13 @@ from datetime import datetime, date, time
 import os
 import traceback
 
-# Try to load .env file if python-dotenv is installed
 try:
-    from dotenv import load_dotenv
+    from dotenv import load_dotenv # try to load .env file if python-dotenv is installed
     load_dotenv()
 except ImportError:
     pass  # python-dotenv not installed, skip
 
 from config import DATABASE_URL
-
-# Debug: Display actual connection string (password masked)
 if DATABASE_URL:
     if '@' in DATABASE_URL:
         parts = DATABASE_URL.split('@')
@@ -33,24 +26,20 @@ from flask import abort
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
 
-# Create database engine and session with error handling
 try:
     engine = create_engine(DATABASE_URL, echo=False, pool_pre_ping=True)
-    Session = sessionmaker(bind=engine)
-    
-    # Test connection
+    Session = sessionmaker(bind=engine) #create database engine and session with error handling
+
     with engine.connect() as conn:
-        conn.execute(text("SELECT 1"))
-    # Mask password in log output
+        conn.execute(text("SELECT 1")) #test connection
     if DATABASE_URL and '@' in DATABASE_URL:
         db_info = DATABASE_URL.split('@')[1]
-        print(f"✓ Database connection successful: {db_info}")
+        print(f"✓ Database connection successful: {db_info}") #mask password in log output
     else:
         print(f"✓ Database connection successful")
 except Exception as e:
     print(f"✗ Database connection error: {e}")
     if DATABASE_URL:
-        # Mask password in error output
         if '@' in DATABASE_URL:
             parts = DATABASE_URL.split('@')
             if '://' in parts[0] and ':' in parts[0].split('://')[1]:
@@ -64,19 +53,13 @@ except Exception as e:
             print(f"  DATABASE_URL: configured")
     else:
         print(f"  DATABASE_URL: not set")
-    
-    # Provide helpful troubleshooting
     print("\nTroubleshooting:")
     print("  1. Check if database service is running: brew services list | grep postgresql")
     print("  2. Check if database user exists: psql -U nazerke -l")
     print("  3. Check if port is correct (should be 5433)")
     print("  4. Check if password is correct")
     print("  5. If using environment variable, check: echo $DATABASE_URL")
-    # Don't raise here - let Flask handle it with error handler
-
-
 def get_session():
-    """Create a new database session"""
     try:
         return Session()
     except Exception as e:
@@ -84,24 +67,17 @@ def get_session():
 
 
 def first_or_404(query):
-    """Helper function to get first result or return 404"""
     result = query.first()
     if result is None:
         abort(404)
     return result
-
-
-# ==================== HOME PAGE ====================
 @app.route('/')
 def index():
-    """Home page with links to all entities"""
     return render_template('index.html')
 
-
-# ==================== USER ROUTES ====================
+#User routes
 @app.route('/users')
-def user_list():
-    """List all users"""
+def user_list(): #list all users
     session = get_session()
     try:
         users = session.query(User).all()
@@ -117,8 +93,7 @@ def user_list():
 
 
 @app.route('/users/create', methods=['GET', 'POST'])
-def user_create():
-    """Create a new user"""
+def user_create(): #create a new user
     if request.method == 'POST':
         session = get_session()
         try:
@@ -145,8 +120,7 @@ def user_create():
 
 
 @app.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
-def user_edit(user_id):
-    """Edit an existing user"""
+def user_edit(user_id): #edit an existing user
     session = get_session()
     try:
         user = first_or_404(session.query(User).filter_by(user_id=user_id))
@@ -169,8 +143,7 @@ def user_edit(user_id):
 
 
 @app.route('/users/<int:user_id>/delete', methods=['POST'])
-def user_delete(user_id):
-    """Delete a user"""
+def user_delete(user_id): #delete user
     session = get_session()
     try:
         user = first_or_404(session.query(User).filter_by(user_id=user_id))
@@ -184,11 +157,9 @@ def user_delete(user_id):
         session.close()
     return redirect(url_for('user_list'))
 
-
-# ==================== CAREGIVER ROUTES ====================
+#caregiver routes
 @app.route('/caregivers')
-def caregiver_list():
-    """List all caregivers with user information"""
+def caregiver_list():#List all caregivers with user information
     session = get_session()
     try:
         caregivers = session.query(Caregiver).join(User).all()
@@ -198,8 +169,7 @@ def caregiver_list():
 
 
 @app.route('/caregivers/create', methods=['GET', 'POST'])
-def caregiver_create():
-    """Create a new caregiver"""
+def caregiver_create(): #Create a new caregiver
     session = get_session()
     try:
         if request.method == 'POST':
@@ -271,8 +241,7 @@ def caregiver_create():
 
 
 @app.route('/caregivers/<int:caregiver_user_id>/edit', methods=['GET', 'POST'])
-def caregiver_edit(caregiver_user_id):
-    """Edit an existing caregiver"""
+def caregiver_edit(caregiver_user_id): #Edit an existing caregiver
     session = get_session()
     try:
         caregiver = first_or_404(session.query(Caregiver).filter_by(caregiver_user_id=caregiver_user_id))
@@ -302,7 +271,6 @@ def caregiver_edit(caregiver_user_id):
 
 @app.route('/caregivers/<int:caregiver_user_id>/delete', methods=['POST'])
 def caregiver_delete(caregiver_user_id):
-    """Delete a caregiver"""
     session = get_session()
     try:
         caregiver = first_or_404(session.query(Caregiver).filter_by(caregiver_user_id=caregiver_user_id))
@@ -316,11 +284,9 @@ def caregiver_delete(caregiver_user_id):
         session.close()
     return redirect(url_for('caregiver_list'))
 
-
-# ==================== MEMBER ROUTES ====================
+#member routes
 @app.route('/members')
 def member_list():
-    """List all members with user information"""
     session = get_session()
     try:
         members = session.query(Member).join(User).all()
@@ -331,7 +297,6 @@ def member_list():
 
 @app.route('/members/create', methods=['GET', 'POST'])
 def member_create():
-    """Create a new member"""
     session = get_session()
     try:
         if request.method == 'POST':
@@ -379,8 +344,7 @@ def member_create():
 
 
 @app.route('/members/<int:member_user_id>/edit', methods=['GET', 'POST'])
-def member_edit(member_user_id):
-    """Edit an existing member"""
+def member_edit(member_user_id): #edit an existing model
     session = get_session()
     try:
         member = first_or_404(session.query(Member).filter_by(member_user_id=member_user_id))
@@ -400,7 +364,6 @@ def member_edit(member_user_id):
 
 @app.route('/members/<int:member_user_id>/delete', methods=['POST'])
 def member_delete(member_user_id):
-    """Delete a member"""
     session = get_session()
     try:
         member = first_or_404(session.query(Member).filter_by(member_user_id=member_user_id))
@@ -415,10 +378,9 @@ def member_delete(member_user_id):
     return redirect(url_for('member_list'))
 
 
-# ==================== ADDRESS ROUTES ====================
+#address routes
 @app.route('/addresses')
-def address_list():
-    """List all addresses with member information"""
+def address_list(): #List all addresses with member information
     session = get_session()
     try:
         addresses = session.query(Address).join(Member).join(User).all()
@@ -429,7 +391,6 @@ def address_list():
 
 @app.route('/addresses/create', methods=['GET', 'POST'])
 def address_create():
-    """Create a new address"""
     session = get_session()
     try:
         if request.method == 'POST':
@@ -478,8 +439,7 @@ def address_create():
 
 
 @app.route('/addresses/<int:member_user_id>/edit', methods=['GET', 'POST'])
-def address_edit(member_user_id):
-    """Edit an existing address"""
+def address_edit(member_user_id): #Edit an existing address
     session = get_session()
     try:
         address = first_or_404(session.query(Address).filter_by(member_user_id=member_user_id))
@@ -500,7 +460,6 @@ def address_edit(member_user_id):
 
 @app.route('/addresses/<int:member_user_id>/delete', methods=['POST'])
 def address_delete(member_user_id):
-    """Delete an address"""
     session = get_session()
     try:
         address = first_or_404(session.query(Address).filter_by(member_user_id=member_user_id))
@@ -514,11 +473,9 @@ def address_delete(member_user_id):
         session.close()
     return redirect(url_for('address_list'))
 
-
-# ==================== JOB ROUTES ====================
+#job routes
 @app.route('/jobs')
-def job_list():
-    """List all jobs with member information"""
+def job_list(): #list all jobs with member information
     session = get_session()
     try:
         jobs = session.query(Job).join(Member).join(User).all()
@@ -529,7 +486,6 @@ def job_list():
 
 @app.route('/jobs/create', methods=['GET', 'POST'])
 def job_create():
-    """Create a new job"""
     session = get_session()
     try:
         if request.method == 'POST':
@@ -594,8 +550,7 @@ def job_create():
 
 
 @app.route('/jobs/<int:job_id>/edit', methods=['GET', 'POST'])
-def job_edit(job_id):
-    """Edit an existing job"""
+def job_edit(job_id): #edit already existing job
     session = get_session()
     try:
         job = first_or_404(session.query(Job).filter_by(job_id=job_id))
@@ -625,7 +580,6 @@ def job_edit(job_id):
 
 @app.route('/jobs/<int:job_id>/delete', methods=['POST'])
 def job_delete(job_id):
-    """Delete a job"""
     session = get_session()
     try:
         job = first_or_404(session.query(Job).filter_by(job_id=job_id))
@@ -640,10 +594,9 @@ def job_delete(job_id):
     return redirect(url_for('job_list'))
 
 
-# ==================== JOB APPLICATION ROUTES ====================
+#job application routes
 @app.route('/job-applications')
-def job_application_list():
-    """List all job applications with caregiver and job information"""
+def job_application_list(): #List all job applications with caregiver and job information
     session = get_session()
     try:
         applications = session.query(JobApplication).join(Caregiver).join(User).join(Job).all()
@@ -653,8 +606,7 @@ def job_application_list():
 
 
 @app.route('/job-applications/create', methods=['GET', 'POST'])
-def job_application_create():
-    """Create a new job application"""
+def job_application_create(): #create a new job application
     session = get_session()
     try:
         if request.method == 'POST':
@@ -718,8 +670,7 @@ def job_application_create():
 
 
 @app.route('/job-applications/<int:caregiver_user_id>/<int:job_id>/edit', methods=['GET', 'POST'])
-def job_application_edit(caregiver_user_id, job_id):
-    """Edit an existing job application"""
+def job_application_edit(caregiver_user_id, job_id):  #edit an existing job application
     session = get_session()
     try:
         application = first_or_404(session.query(JobApplication).filter_by(
@@ -745,7 +696,6 @@ def job_application_edit(caregiver_user_id, job_id):
 
 @app.route('/job-applications/<int:caregiver_user_id>/<int:job_id>/delete', methods=['POST'])
 def job_application_delete(caregiver_user_id, job_id):
-    """Delete a job application"""
     session = get_session()
     try:
         application = first_or_404(session.query(JobApplication).filter_by(
@@ -763,13 +713,12 @@ def job_application_delete(caregiver_user_id, job_id):
     return redirect(url_for('job_application_list'))
 
 
-# ==================== APPOINTMENT ROUTES ====================
+#appointment routes
 @app.route('/appointments')
 def appointment_list():
     """List all appointments with caregiver and member information"""
     session = get_session()
     try:
-        # 使用 joinedload 预加载关系，避免 N+1 查询问题
         from sqlalchemy.orm import joinedload
         appointments = session.query(Appointment)\
             .options(joinedload(Appointment.caregiver).joinedload(Caregiver.user))\
@@ -781,8 +730,7 @@ def appointment_list():
 
 
 @app.route('/appointments/create', methods=['GET', 'POST'])
-def appointment_create():
-    """Create a new appointment"""
+def appointment_create(): #create a new appointment
     session = get_session()
     try:
         if request.method == 'POST':
@@ -814,7 +762,6 @@ def appointment_create():
 
 @app.route('/appointments/<int:appointment_id>/edit', methods=['GET', 'POST'])
 def appointment_edit(appointment_id):
-    """Edit an existing appointment"""
     session = get_session()
     try:
         appointment = first_or_404(session.query(Appointment).filter_by(appointment_id=appointment_id))
@@ -841,7 +788,6 @@ def appointment_edit(appointment_id):
 
 @app.route('/appointments/<int:appointment_id>/delete', methods=['POST'])
 def appointment_delete(appointment_id):
-    """Delete an appointment"""
     session = get_session()
     try:
         appointment = first_or_404(session.query(Appointment).filter_by(appointment_id=appointment_id))
@@ -855,15 +801,12 @@ def appointment_delete(appointment_id):
         session.close()
     return redirect(url_for('appointment_list'))
 
-
-# Global error handler
 @app.errorhandler(Exception)
 def handle_error(e):
     """Handle all exceptions and display helpful error messages"""
     error_type = type(e).__name__
     error_message = str(e)
     
-    # Log the full traceback for debugging
     print(f"\n{'='*60}")
     print(f"ERROR: {error_type}")
     print(f"Message: {error_message}")
@@ -871,7 +814,6 @@ def handle_error(e):
     traceback.print_exc()
     print(f"{'='*60}\n")
     
-    # Return user-friendly error page
     return render_template('error.html', 
                          error_type=error_type,
                          error_message=error_message), 500
