@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Jobs - Online Caregivers Platform{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Jobs</h1>
+    <a href="{{ url_for('job_create') }}" class="btn btn-primary">Create New Job</a>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Job ID</th>
+            <th>Member</th>
+            <th>Required Caregiving Type</th>
+            <th>Date Posted</th>
+            <th>Other Requirements</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for job in jobs %}
+        <tr>
+            <td>{{ job.job_id }}</td>
+            <td>{{ job.member.user.given_name }} {{ job.member.user.surname }} (ID: {{ job.member_user_id }})</td>
+            <td>{{ job.required_caregiving_type or '-' }}</td>
+            <td>{{ job.date_posted.strftime('%Y-%m-%d') if job.date_posted else '-' }}</td>
+            <td>{{ (job.other_requirements[:50] + '...') if job.other_requirements and job.other_requirements|length > 50 else (job.other_requirements or '-') }}</td>
+            <td>
+                <a href="{{ url_for('job_edit', job_id=job.job_id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                <form method="POST" action="{{ url_for('job_delete', job_id=job.job_id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this job?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+

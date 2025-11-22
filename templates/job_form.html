@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}{% if job %}Edit Job{% else %}Create Job{% endif %} - Online Caregivers Platform{% endblock %}
+
+{% block content %}
+<h1>{% if job %}Edit Job{% else %}Create New Job{% endif %}</h1>
+
+<form method="POST" class="mt-4">
+    <div class="mb-3">
+        <label for="member_user_id" class="form-label">Member *</label>
+        <select class="form-select" id="member_user_id" name="member_user_id" required>
+            <option value="">Select a member</option>
+            {% for member in members %}
+                <option value="{{ member.member_user_id }}" {% if job and job.member_user_id == member.member_user_id %}selected{% endif %}>
+                    {{ member.member_user_id }} - {{ member.user.given_name }} {{ member.user.surname }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="mb-3">
+        <label for="required_caregiving_type" class="form-label">Required Caregiving Type *</label>
+        <select class="form-select" id="required_caregiving_type" name="required_caregiving_type" required>
+            <option value="">Select caregiving type</option>
+            <option value="Babysitter" {% if job and job.required_caregiving_type == 'Babysitter' %}selected{% endif %}>Babysitter</option>
+            <option value="Elderly Care" {% if job and job.required_caregiving_type == 'Elderly Care' %}selected{% endif %}>Elderly Care</option>
+            <option value="Playmate" {% if job and job.required_caregiving_type == 'Playmate' %}selected{% endif %}>Playmate</option>
+        </select>
+    </div>
+    
+    <div class="mb-3">
+        <label for="other_requirements" class="form-label">Other Requirements</label>
+        <textarea class="form-control" id="other_requirements" name="other_requirements" rows="4">{{ job.other_requirements if job else '' }}</textarea>
+    </div>
+    
+    <div class="mb-3">
+        <label for="date_posted" class="form-label">Date Posted</label>
+        <input type="date" class="form-control" id="date_posted" name="date_posted" value="{{ job.date_posted.strftime('%Y-%m-%d') if job and job.date_posted else '' }}">
+    </div>
+    
+    <button type="submit" class="btn btn-primary">{% if job %}Update{% else %}Create{% endif %} Job</button>
+    <a href="{{ url_for('job_list') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
+
+

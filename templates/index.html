@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Online Caregivers Platform{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="mb-4">Online Caregivers Platform</h1>
+        <p class="lead">Manage all entities in the database</p>
+        
+        <div class="row mt-4">
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Users</h5>
+                        <p class="card-text">Manage user accounts</p>
+                        <a href="{{ url_for('user_list') }}" class="btn btn-primary">View Users</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Caregivers</h5>
+                        <p class="card-text">Manage caregiver profiles</p>
+                        <a href="{{ url_for('caregiver_list') }}" class="btn btn-primary">View Caregivers</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Members</h5>
+                        <p class="card-text">Manage member profiles</p>
+                        <a href="{{ url_for('member_list') }}" class="btn btn-primary">View Members</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Addresses</h5>
+                        <p class="card-text">Manage member addresses</p>
+                        <a href="{{ url_for('address_list') }}" class="btn btn-primary">View Addresses</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Jobs</h5>
+                        <p class="card-text">Manage job postings</p>
+                        <a href="{{ url_for('job_list') }}" class="btn btn-primary">View Jobs</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Job Applications</h5>
+                        <p class="card-text">Manage job applications</p>
+                        <a href="{{ url_for('job_application_list') }}" class="btn btn-primary">View Applications</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Appointments</h5>
+                        <p class="card-text">Manage appointments</p>
+                        <a href="{{ url_for('appointment_list') }}" class="btn btn-primary">View Appointments</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

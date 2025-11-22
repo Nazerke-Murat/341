@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Caregivers - Online Caregivers Platform{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Caregivers</h1>
+    <a href="{{ url_for('caregiver_create') }}" class="btn btn-primary">Create New Caregiver</a>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>User ID</th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Caregiving Type</th>
+            <th>Hourly Rate</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for caregiver in caregivers %}
+        <tr>
+            <td>{{ caregiver.caregiver_user_id }}</td>
+            <td>{{ caregiver.user.given_name }} {{ caregiver.user.surname }}</td>
+            <td>{{ caregiver.gender or '-' }}</td>
+            <td>{{ caregiver.caregiving_type or '-' }}</td>
+            <td>${{ "%.2f"|format(caregiver.hourly_rate) if caregiver.hourly_rate else '-' }}</td>
+            <td>
+                <a href="{{ url_for('caregiver_edit', caregiver_user_id=caregiver.caregiver_user_id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                <form method="POST" action="{{ url_for('caregiver_delete', caregiver_user_id=caregiver.caregiver_user_id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this caregiver?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+

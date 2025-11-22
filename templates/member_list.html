@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Members - Online Caregivers Platform{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Members</h1>
+    <a href="{{ url_for('member_create') }}" class="btn btn-primary">Create New Member</a>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>User ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>City</th>
+            <th>House Rules</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for member in members %}
+        <tr>
+            <td>{{ member.member_user_id }}</td>
+            <td>{{ member.user.given_name }} {{ member.user.surname }}</td>
+            <td>{{ member.user.email }}</td>
+            <td>{{ member.user.city or '-' }}</td>
+            <td>{{ (member.house_rules[:50] + '...') if member.house_rules and member.house_rules|length > 50 else (member.house_rules or '-') }}</td>
+            <td>
+                <a href="{{ url_for('member_edit', member_user_id=member.member_user_id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                <form method="POST" action="{{ url_for('member_delete', member_user_id=member.member_user_id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this member?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+

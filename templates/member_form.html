@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{% if member %}Edit Member{% else %}Create Member{% endif %} - Online Caregivers Platform{% endblock %}
+
+{% block content %}
+<h1>{% if member %}Edit Member{% else %}Create New Member{% endif %}</h1>
+
+<form method="POST" class="mt-4">
+    <div class="mb-3">
+        <label for="member_user_id" class="form-label">User *</label>
+        <select class="form-select" id="member_user_id" name="member_user_id" {% if member %}disabled{% else %}required{% endif %}>
+            {% if not member %}
+                <option value="">Select a user</option>
+            {% endif %}
+            {% for user in users %}
+                <option value="{{ user.user_id }}" {% if member and member.member_user_id == user.user_id %}selected{% endif %}>
+                    {{ user.user_id }} - {{ user.given_name }} {{ user.surname }} ({{ user.email }})
+                </option>
+            {% endfor %}
+        </select>
+        {% if member %}
+            <input type="hidden" name="member_user_id" value="{{ member.member_user_id }}">
+        {% endif %}
+    </div>
+    
+    <div class="mb-3">
+        <label for="house_rules" class="form-label">House Rules</label>
+        <textarea class="form-control" id="house_rules" name="house_rules" rows="4">{{ member.house_rules if member else '' }}</textarea>
+    </div>
+    
+    <div class="mb-3">
+        <label for="dependent_description" class="form-label">Dependent Description</label>
+        <textarea class="form-control" id="dependent_description" name="dependent_description" rows="4">{{ member.dependent_description if member else '' }}</textarea>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">{% if member %}Update{% else %}Create{% endif %} Member</button>
+    <a href="{{ url_for('member_list') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
+
+

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Error - Online Caregivers Platform{% endblock %}
+
+{% block content %}
+<div class="alert alert-danger">
+    <h2>Internal Server Error</h2>
+    <p><strong>Error Type:</strong> {{ error_type }}</p>
+    <p><strong>Error Message:</strong> {{ error_message }}</p>
+    
+    <hr>
+    
+    <h4>Common Solutions:</h4>
+    <ul>
+        <li><strong>Database Connection:</strong> Make sure your database server is running and DATABASE_URL is correct.</li>
+        <li><strong>Database Tables:</strong> Ensure all tables exist. Run <code>database_schema.sql</code> if needed.</li>
+        <li><strong>Data:</strong> Make sure sample data is loaded. Run <code>sample_data.sql</code> if needed.</li>
+        <li><strong>Check Terminal:</strong> Look at the terminal/console output for detailed error information.</li>
+    </ul>
+    
+    <hr>
+    
+    <p>
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Return to Home</a>
+    </p>
+</div>
+{% endblock %}
+

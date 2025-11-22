@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}{% if address %}Edit Address{% else %}Create Address{% endif %} - Online Caregivers Platform{% endblock %}
+
+{% block content %}
+<h1>{% if address %}Edit Address{% else %}Create New Address{% endif %}</h1>
+
+<form method="POST" class="mt-4">
+    <div class="mb-3">
+        <label for="member_user_id" class="form-label">Member *</label>
+        <select class="form-select" id="member_user_id" name="member_user_id" {% if address %}disabled{% else %}required{% endif %}>
+            {% if not address %}
+                <option value="">Select a member</option>
+            {% endif %}
+            {% for member in members %}
+                <option value="{{ member.member_user_id }}" {% if address and address.member_user_id == member.member_user_id %}selected{% endif %}>
+                    {{ member.member_user_id }} - {{ member.user.given_name }} {{ member.user.surname }}
+                </option>
+            {% endfor %}
+        </select>
+        {% if address %}
+            <input type="hidden" name="member_user_id" value="{{ address.member_user_id }}">
+        {% endif %}
+    </div>
+    
+    <div class="mb-3">
+        <label for="house_number" class="form-label">House Number</label>
+        <input type="text" class="form-control" id="house_number" name="house_number" value="{{ address.house_number if address else '' }}">
+    </div>
+    
+    <div class="mb-3">
+        <label for="street" class="form-label">Street</label>
+        <input type="text" class="form-control" id="street" name="street" value="{{ address.street if address else '' }}">
+    </div>
+    
+    <div class="mb-3">
+        <label for="town" class="form-label">Town</label>
+        <input type="text" class="form-control" id="town" name="town" value="{{ address.town if address else '' }}">
+    </div>
+    
+    <button type="submit" class="btn btn-primary">{% if address %}Update{% else %}Create{% endif %} Address</button>
+    <a href="{{ url_for('address_list') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
+
+

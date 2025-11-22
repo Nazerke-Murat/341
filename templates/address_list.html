@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Addresses - Online Caregivers Platform{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Addresses</h1>
+    <a href="{{ url_for('address_create') }}" class="btn btn-primary">Create New Address</a>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Member User ID</th>
+            <th>Member Name</th>
+            <th>House Number</th>
+            <th>Street</th>
+            <th>Town</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for address in addresses %}
+        <tr>
+            <td>{{ address.member_user_id }}</td>
+            <td>{{ address.member.user.given_name }} {{ address.member.user.surname }}</td>
+            <td>{{ address.house_number or '-' }}</td>
+            <td>{{ address.street or '-' }}</td>
+            <td>{{ address.town or '-' }}</td>
+            <td>
+                <a href="{{ url_for('address_edit', member_user_id=address.member_user_id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                <form method="POST" action="{{ url_for('address_delete', member_user_id=address.member_user_id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this address?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+
